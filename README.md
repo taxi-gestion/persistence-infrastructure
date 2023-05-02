@@ -1,9 +1,10 @@
 
+
 # persistence infrastructure
 
 ## À propos
 
-persistence infrastructure décrit par le code un aspect de l'infrastructure à provisionner pour taxi-gestion.
+persistence infrastructure décrit par le code l'infrastructure à provisionner pour ... de taxi-gestion.
 
 ## Table des matières
 
@@ -101,7 +102,7 @@ Pour que les modifications de la description de l'infrastructure soient appliqu�
 - [Terraform Cloud](https://app.terraform.io/) est la plateforme proposée par HashiCorp pour administrer les modifications d'infrastructure
     - Organisation : [taxi-gestion](https://app.terraform.io/app/taxi-gestion/workspaces)
     - Workspaces : `persistence`
-        - [persistence](https://app.terraform.io/app/taxi-gestion/workspaces/persistence)
+        - [persistence-production](https://app.terraform.io/app/taxi-gestion/workspaces/persistence)
     - Variables
         - `AWS_SECRET_ACCESS_KEY`
             - Value : Sensitive - write only
