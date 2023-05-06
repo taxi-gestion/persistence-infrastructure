@@ -29,8 +29,29 @@ variable "private_subnets_ids" {
   description = "The ids of the project vpc private subnets where the db instance is hosted"
 }
 
+variable "public_subnets_ids" {
+  type        = list(string)
+  nullable    = false
+  description = "The ids of the project vpc public subnets"
+}
+
 variable "vpc_id" {
   type        = string
   nullable    = false
   description = "The id of the project vpc"
 }
+
+variable "public_route_table_id" {
+  type        = string
+  nullable    = false
+  description = "The id of the project vpc public route table"
+}
+
+variable "open_rds_to_public_internet" {
+  type        = bool
+  nullable    = true
+  description = "If true the rds instance will have a reachable endpoint from public internet"
+  default     = false
+
+}
+

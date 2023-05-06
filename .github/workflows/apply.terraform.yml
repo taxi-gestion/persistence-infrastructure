@@ -13,13 +13,33 @@ on:
         type: string
         required: false
         default: ''
-#  push:
-#    branches:
-#      - 'main'
+      open-db-to-public-internet:
+        description: 'Make the RDS instance available to the public internet for psql connexion must be "true" or "false"'
+        type: string
+        required: false
+        default: "false"
+
+  workflow_call:
+    inputs:
+      open-db-to-public-internet:
+        description: 'Make the RDS instance available to the public internet for psql connexion must be "true" or "false"'
+        type: string
+        required: false
+        default: "false"
+    secrets:
+      TF_API_TOKEN:
+        required: true
+
+
+  #push:
+  #  branches:
+  #    - main
+  repository_dispatch:
+    types: [remote-trigger]
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform checks & apply'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -46,12 +66,14 @@ jobs:
         if: github.ref == 'refs/heads/main' && inputs.force-replace == ''
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+          echo "open_rds_to_public_internet=${{ inputs.open-db-to-public-internet }}" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false
 
       - name: Terraform Apply with force replace ${{ inputs.force-replace }}
         if: github.ref == 'refs/heads/main' && inputs.force-replace != ''
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
+          echo "open_rds_to_public_internet=${{ inputs.open-db-to-public-internet }}" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
 
   notify-on-error:
