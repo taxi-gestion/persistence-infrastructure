@@ -1,25 +1,3 @@
-# TODO Everything below in persistence
-# Get available zones for this account
-#data "aws_availability_zones" "available" {
-#  state = "available"
-#}
-#
-#resource "aws_subnet" "alternating" {
-#  availability_zone       = data.aws_availability_zones.available.names[1]
-#  vpc_id                  = aws_vpc.vpc.id
-#  map_public_ip_on_launch = false
-#  cidr_block              = "10.0.4.0/24"
-#  tags                    = merge(local.tags, { "Name" = "alternating" })
-#}
-
-# Open connexion for the migration data transfer
-#resource "aws_route_table_association" "route_association_open_rds" {
-#  count          = var.openRdsToPublicInternet ? 1 : 0
-#  subnet_id      = aws_subnet.alternating.id
-#  route_table_id = aws_route_table.public_route_table.id
-#}
-
-#TODO Merge with alternating subnet for now ?
 resource "aws_db_subnet_group" "private_subnets_group" {
   name       = "private-subnets-for-rds"
   subnet_ids = var.private_subnets_ids //[data.aws_subnet.private_subnets.0.id, data.aws_subnet.private_subnets.1.id]
@@ -59,4 +37,47 @@ resource "aws_security_group_rule" "allow_outgoing_from_database" {
   cidr_blocks       = ["0.0.0.0/0"]
   ipv6_cidr_blocks  = ["::/0"]
   security_group_id = aws_security_group.security_group_for_rds.id
+}
+
+# Ephemeral: Open the RDS instance to the internet for data migration
+# Get available zones for this account
+data "aws_availability_zones" "available" {
+  state = "available"
+}
+
+resource "aws_internet_gateway" "ephemeral_igw" {
+  count = var.open_rds_to_public_internet ? 1 : 0
+
+  vpc_id = var.vpc_id
+
+  tags = local.tags
+}
+
+resource "aws_route_table" "ephemeral_public" {
+  count = var.open_rds_to_public_internet ? 1 : 0
+
+  vpc_id = var.vpc_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.ephemeral_igw[0].id
+  }
+
+  tags = local.tags
+}
+
+resource "aws_subnet" "ephemeral" {
+  count = var.open_rds_to_public_internet ? 1 : 0
+
+  availability_zone       = data.aws_availability_zones.available.names[1]
+  vpc_id                  = var.vpc_id
+  map_public_ip_on_launch = false
+  cidr_block              = "10.0.5.0/24"
+  tags                    = merge(local.tags, { "Name" = "ephemeral" })
+}
+
+resource "aws_route_table_association" "route_association_open_rds" {
+  count          = var.open_rds_to_public_internet ? 1 : 0
+  subnet_id      = aws_subnet.ephemeral[0].id
+  route_table_id = aws_route_table.ephemeral_public[0].id
 }

@@ -34,3 +34,12 @@ variable "vpc_id" {
   nullable    = false
   description = "The id of the project vpc"
 }
+
+variable "open_rds_to_public_internet" {
+  type        = bool
+  nullable    = true
+  description = "If true the rds instance will have a reachable endpoint from public internet"
+  default     = false
+
+}
+
