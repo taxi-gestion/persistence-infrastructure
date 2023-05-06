@@ -11,8 +11,6 @@ on:
         required: true
       ORIENTDB_DBPASSWORD:
         required: true
-      SSH_LEGACY_SERVER_LOGIN:
-        required: true
       SSH_LEGACY_SERVER_PASSWORD:
         required: true
       LEGACY_SERVER_USER:
@@ -23,7 +21,7 @@ on:
         required: true
       LEGACY_SERVER_PORT:
         required: true
-      LEGACY_SERVER_FINGERTPRINT:
+      LEGACY_SERVER_FINGERPRINT:
         required: true
       POSTGRES_USER:
         required: true
@@ -59,21 +57,21 @@ jobs:
       - name: Get file from repo
         uses: actions/checkout@v3
 
-      - name: Generate dump on legacy server
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.LEGACY_SERVER_HOST }}
-          username: ${{ secrets.LEGACY_SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_LEGACY_SERVER_PASSWORD }}
-          port: ${{ secrets.LEGACY_SERVER_PORT }}
-          script: |
-            cd /opt
-            sudo /opt/orientdb-community-2.2.30/bin/console.sh "connect plocal:orientdb-community-2.2.30/databases/${{ secrets.ORIENTDB_DBNAME }} ${{ secrets.ORIENTDB_DBLOGIN }} ${{ secrets.ORIENTDB_DBPASSWORD }};EXPORT DATABASE /home/${{ secrets.LEGACY_SERVER_USER }}/${{ secrets.DUMP_FILENAME }};exit"
-            sudo chown -R orientdb:orientdb orientdb-community-2.2.30/
-            cd /home/${{ secrets.LEGACY_SERVER_USER }}
-            sudo chown ${{ secrets.LEGACY_SERVER_USER }}:${{ secrets.LEGACY_SERVER_USER }} ${{ secrets.DUMP_FILENAME }}
-            exit
+      #- name: Generate dump on legacy server
+      #  uses: appleboy/ssh-action@v0.1.7
+      #  with:
+      #    host: ${{ secrets.LEGACY_SERVER_HOST }}
+      #    username: ${{ secrets.LEGACY_SERVER_USER }}
+      #    key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #    passphrase: ${{ secrets.SSH_LEGACY_SERVER_PASSWORD }}
+      #    port: ${{ secrets.LEGACY_SERVER_PORT }}
+      #    script: |
+      #      cd /opt
+      #      sudo /opt/orientdb-community-2.2.30/bin/console.sh "connect plocal:orientdb-community-2.2.30/databases/${{ secrets.ORIENTDB_DBNAME }} ${{ secrets.ORIENTDB_DBLOGIN }} ${{ secrets.ORIENTDB_DBPASSWORD }};EXPORT DATABASE /home/${{ secrets.LEGACY_SERVER_USER }}/${{ secrets.DUMP_FILENAME }};exit"
+      #      sudo chown -R orientdb:orientdb orientdb-community-2.2.30/
+      #      cd /home/${{ secrets.LEGACY_SERVER_USER }}
+      #      sudo chown ${{ secrets.LEGACY_SERVER_USER }}:${{ secrets.LEGACY_SERVER_USER }} ${{ secrets.DUMP_FILENAME }}
+      #      exit
 
       - name: Copy dump to runner
         uses: nicklasfrahm/scp-action@main
@@ -83,7 +81,7 @@ jobs:
           username: ${{ secrets.LEGACY_SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_LEGACY_SERVER_PASSWORD }}
-          fingerprint: ${{ secrets.LEGACY_SERVER_FINGERTPRINT }}
+          fingerprint: ${{ secrets.LEGACY_SERVER_FINGERPRINT }}
           port: ${{ secrets.LEGACY_SERVER_PORT }}
           source: "/home/${{ secrets.LEGACY_SERVER_USER }}/${{ secrets.DUMP_FILENAME }}"
           target: "${{ secrets.DUMP_FILENAME }}"

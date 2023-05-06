@@ -14,18 +14,22 @@ on:
         required: false
         default: ''
       open-db-to-public-internet:
-        description: 'Make the RDS instance available to the public internet for psql connexion'
-        type: bool
+        description: 'Make the RDS instance available to the public internet for psql connexion must be "true" or "false"'
+        type: string
         required: false
-        default: false
+        default: "false"
 
   workflow_call:
     inputs:
       open-db-to-public-internet:
-        description: 'Make the RDS instance available to the public internet for psql connexion'
-        type: bool
+        description: 'Make the RDS instance available to the public internet for psql connexion must be "true" or "false"'
+        type: string
         required: false
-        default: false
+        default: "false"
+    secrets:
+      TF_API_TOKEN:
+        required: true
+
 
   #push:
   #  branches:
