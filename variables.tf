@@ -41,10 +41,10 @@ variable "vpc_id" {
   description = "The id of the project vpc"
 }
 
-variable "internet_gateway_id" {
+variable "public_route_table_id" {
   type        = string
   nullable    = false
-  description = "The id of the project vpc internet gateway"
+  description = "The id of the project vpc public route table"
 }
 
 variable "open_rds_to_public_internet" {

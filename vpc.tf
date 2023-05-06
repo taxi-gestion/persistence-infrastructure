@@ -1,42 +1,13 @@
 # Ephemeral: Open the RDS instance to the internet for data migration
-# Get available zones for this account
-#data "aws_availability_zones" "available" {
-#  state = "available"
-#}
-#
-#resource "aws_route_table" "ephemeral_public" {
-#  count = var.open_rds_to_public_internet ? 1 : 0
-#
-#  vpc_id = var.vpc_id
-#
-#  route {
-#    cidr_block = "0.0.0.0/0"
-#    gateway_id = var.internet_gateway_id
-#  }
-#
-#  tags = local.tags
-#}
-#
-#resource "aws_subnet" "ephemeral" {
-#  count = var.open_rds_to_public_internet ? 1 : 0
-#
-#  availability_zone       = data.aws_availability_zones.available.names[1]
-#  vpc_id                  = var.vpc_id
-#  map_public_ip_on_launch = false
-#  cidr_block              = "10.0.5.0/24"
-#  tags                    = merge(local.tags, { "Name" = "ephemeral" })
-#}
-#
-#resource "aws_route_table_association" "route_association_open_rds" {
-#  count          = var.open_rds_to_public_internet ? 1 : 0
-#  subnet_id      = aws_subnet.ephemeral[0].id
-#  route_table_id = aws_route_table.ephemeral_public[0].id
-#}
-
+resource "aws_route_table_association" "route_association_open_rds" {
+  count          = var.open_rds_to_public_internet ? 1 : 0
+  subnet_id      = var.private_subnets_ids[0] // Must match the subnet in the same AZ as the instance
+  route_table_id = var.public_route_table_id
+}
 
 resource "aws_db_subnet_group" "private_subnets_group" {
   name       = "private-subnets-for-rds"
-  subnet_ids = compact(concat(var.private_subnets_ids, var.open_rds_to_public_internet ? var.public_subnets_ids : [""]))
+  subnet_ids = var.private_subnets_ids
 }
 
 
