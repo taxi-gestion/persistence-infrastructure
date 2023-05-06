@@ -35,6 +35,12 @@ variable "vpc_id" {
   description = "The id of the project vpc"
 }
 
+variable "internet_gateway_id" {
+  type        = string
+  nullable    = false
+  description = "The id of the project vpc internet gateway"
+}
+
 variable "open_rds_to_public_internet" {
   type        = bool
   nullable    = true

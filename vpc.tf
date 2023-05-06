@@ -45,14 +45,6 @@ data "aws_availability_zones" "available" {
   state = "available"
 }
 
-resource "aws_internet_gateway" "ephemeral_igw" {
-  count = var.open_rds_to_public_internet ? 1 : 0
-
-  vpc_id = var.vpc_id
-
-  tags = local.tags
-}
-
 resource "aws_route_table" "ephemeral_public" {
   count = var.open_rds_to_public_internet ? 1 : 0
 
@@ -60,7 +52,7 @@ resource "aws_route_table" "ephemeral_public" {
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.ephemeral_igw[0].id
+    gateway_id = var.internet_gateway_id
   }
 
   tags = local.tags
