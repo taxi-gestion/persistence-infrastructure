@@ -7,7 +7,7 @@
 
 resource "aws_db_subnet_group" "private_subnets_group" {
   name       = "private-subnets-for-rds"
-  subnet_ids = ["subnet-05ffb4babf427b517", "subnet-0c76a195a2c6b6baa", "subnet-0c683335d25f69a6c", "subnet-071b9865ac3307e18"]
+  subnet_ids = var.private_subnets_ids
 }
 
 
