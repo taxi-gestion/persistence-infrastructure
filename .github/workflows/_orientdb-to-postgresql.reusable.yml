@@ -57,21 +57,21 @@ jobs:
       - name: Get file from repo
         uses: actions/checkout@v3
 
-      - name: Generate dump on legacy server
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.LEGACY_SERVER_HOST }}
-          username: ${{ secrets.LEGACY_SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_LEGACY_SERVER_PASSWORD }}
-          port: ${{ secrets.LEGACY_SERVER_PORT }}
-          script: |
-            cd /opt
-            sudo /opt/orientdb-community-2.2.30/bin/console.sh "connect plocal:orientdb-community-2.2.30/databases/${{ secrets.ORIENTDB_DBNAME }} ${{ secrets.ORIENTDB_DBLOGIN }} ${{ secrets.ORIENTDB_DBPASSWORD }};EXPORT DATABASE /home/${{ secrets.LEGACY_SERVER_USER }}/${{ secrets.DUMP_FILENAME }};exit"
-            sudo chown -R orientdb:orientdb orientdb-community-2.2.30/
-            cd /home/${{ secrets.LEGACY_SERVER_USER }}
-            sudo chown ${{ secrets.LEGACY_SERVER_USER }}:${{ secrets.LEGACY_SERVER_USER }} ${{ secrets.DUMP_FILENAME }}
-            exit
+      #- name: Generate dump on legacy server
+      #  uses: appleboy/ssh-action@v0.1.7
+      #  with:
+      #    host: ${{ secrets.LEGACY_SERVER_HOST }}
+      #    username: ${{ secrets.LEGACY_SERVER_USER }}
+      #    key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #    passphrase: ${{ secrets.SSH_LEGACY_SERVER_PASSWORD }}
+      #    port: ${{ secrets.LEGACY_SERVER_PORT }}
+      #    script: |
+      #      cd /opt
+      #      sudo /opt/orientdb-community-2.2.30/bin/console.sh "connect plocal:orientdb-community-2.2.30/databases/${{ secrets.ORIENTDB_DBNAME }} ${{ secrets.ORIENTDB_DBLOGIN }} ${{ secrets.ORIENTDB_DBPASSWORD }};EXPORT DATABASE /home/${{ secrets.LEGACY_SERVER_USER }}/${{ secrets.DUMP_FILENAME }};exit"
+      #      sudo chown -R orientdb:orientdb orientdb-community-2.2.30/
+      #      cd /home/${{ secrets.LEGACY_SERVER_USER }}
+      #      sudo chown ${{ secrets.LEGACY_SERVER_USER }}:${{ secrets.LEGACY_SERVER_USER }} ${{ secrets.DUMP_FILENAME }}
+      #      exit
 
       - name: Copy dump to runner
         uses: nicklasfrahm/scp-action@main
