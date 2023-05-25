@@ -43,25 +43,3 @@ jobs:
       open-db-to-public-internet: "false"
     secrets:
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-
-  notify-discord:
-    needs:
-      - close-rds-to-external-connexion
-    runs-on: ubuntu-latest
-    steps:
-      - name: Prepare payload
-        run: >-
-          (jq -r '.' <<< '
-          {
-            "username": "Taxi gestion persistence",
-            "content": "Creation, transformation et chargement de la base Orient vers RDS ok"
-          }'
-          ) > payload
-
-      - name: Send notification
-        run: >-
-          curl
-          --header "Content-Type:application/json"
-          --request POST
-          --data @payload
-          ${{ secrets.DISCORD_NOTIFY_HOOK_URL }}
