@@ -1,8 +1,7 @@
 # Ephemeral: Open the RDS instance to the internet for data migration
 resource "aws_route_table_association" "route_association_open_rds" {
-  count          = var.open_rds_to_public_internet ? 1 : 0
-  subnet_id      = var.private_subnets_ids[0] // Must match the subnet in the same AZ as the instance
-  route_table_id = var.public_route_table_id
+  subnet_id      = var.private_subnets_ids[0]
+  route_table_id = var.open_rds_to_public_internet ? var.public_route_table_id : var.private_route_table_id
 }
 
 
