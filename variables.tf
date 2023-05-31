@@ -58,6 +58,6 @@ variable "open_rds_to_public_internet" {
   nullable    = true
   description = "If true the rds instance will have a reachable endpoint from public internet"
   default     = false
-
 }
 
+variable "db_password" {}
