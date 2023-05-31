@@ -13,7 +13,7 @@ resource "aws_db_instance" "rds_instance" {
   ca_cert_identifier                  = "rds-ca-2019"
   username                            = local.project_alphanumeric
   manage_master_user_password         = true
-  multi_az                            = true
+  multi_az                            = false
   skip_final_snapshot                 = true
   storage_encrypted                   = true
   storage_type                        = "gp2"
