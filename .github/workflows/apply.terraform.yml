@@ -76,6 +76,18 @@ jobs:
           echo "open_rds_to_public_internet=${{ inputs.open-db-to-public-internet }}" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
 
+  trigger-api:
+    needs:
+      - terraform
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger api
+        uses: peter-evans/repository-dispatch@v2
+        with:
+          token: ${{ secrets.PAT }}
+          repository: ${{ github.repository_owner }}/api-infrastructure
+          event-type: remote-trigger
+
   notify-on-error:
     needs:
       - terraform
