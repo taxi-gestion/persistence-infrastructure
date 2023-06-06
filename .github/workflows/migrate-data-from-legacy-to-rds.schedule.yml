@@ -2,8 +2,8 @@ name: Cron - Migrate DB from legacy server to RDS instance
 
 on:
   # Every night around 1AM
-  schedule:
-    - cron: "58 1 * * *"
+  #schedule:
+  #  - cron: "58 1 * * *"
 
   workflow_dispatch:
 
