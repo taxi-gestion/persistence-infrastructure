@@ -12,7 +12,7 @@ locals {
       hcl       = false
       sensitive = false
       #value     = "postgres://${aws_db_instance.rds_instance.username}:${jsondecode(data.aws_secretsmanager_secret_version.rds_password_secret_version.secret_string)["password"]}@${aws_db_instance.rds_instance.endpoint}/${aws_db_instance.rds_instance.db_name}"
-      value = "postgres://${aws_db_instance.rds_instance.username}:${var.db_password}@${aws_db_instance.rds_instance_mvp.endpoint}/${aws_db_instance.rds_instance.db_name}"
+      value = "postgres://${aws_db_instance.rds_instance.username}:${var.db_password}@${aws_db_instance.rds_instance.endpoint}/${aws_db_instance.rds_instance.db_name}"
     }
   }
 }
