@@ -13,40 +13,20 @@ on:
         type: string
         required: false
         default: ''
-      open-db-to-public-internet:
-        description: 'Make the RDS instance available to the public internet for psql connexion must be "true" or "false"'
-        type: string
-        required: false
-        default: "false"
-
-  workflow_call:
-    inputs:
-      open-db-to-public-internet:
-        description: 'Make the RDS instance available to the public internet for psql connexion must be "true" or "false"'
-        type: string
-        required: false
-        default: "false"
-    secrets:
-      TF_API_TOKEN:
-        required: true
-
-
-  #push:
-  #  branches:
-  #    - main
-  repository_dispatch:
-    types: [remote-trigger]
+#  push:
+#    branches:
+#      - 'main'
 
 jobs:
   terraform:
-    name: 'Terraform checks & apply'
+    name: 'Terraform'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
+        uses: hashicorp/setup-terraform@v3
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
@@ -66,27 +46,13 @@ jobs:
         if: github.ref == 'refs/heads/main' && inputs.force-replace == ''
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
-          echo "open_rds_to_public_internet=${{ inputs.open-db-to-public-internet }}" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false
 
       - name: Terraform Apply with force replace ${{ inputs.force-replace }}
         if: github.ref == 'refs/heads/main' && inputs.force-replace != ''
         run: |
           echo "tfe_token = \"${{ secrets.TF_API_TOKEN }}\"" >> terraform.auto.tfvars
-          echo "open_rds_to_public_internet=${{ inputs.open-db-to-public-internet }}" >> terraform.auto.tfvars
           terraform apply -auto-approve -input=false -replace=${{ inputs.force-replace }}
-
-  trigger-api:
-    needs:
-      - terraform
-    runs-on: ubuntu-latest
-    steps:
-      - name: Trigger api
-        uses: peter-evans/repository-dispatch@v2
-        with:
-          token: ${{ secrets.PAT }}
-          repository: ${{ github.repository_owner }}/api-infrastructure
-          event-type: remote-trigger
 
   notify-on-error:
     needs:
