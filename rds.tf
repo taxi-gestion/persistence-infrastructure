@@ -3,17 +3,16 @@ locals {
 }
 
 resource "aws_db_instance" "rds_instance" {
-  allocated_storage     = 20
-  max_allocated_storage = 50
-  db_name               = local.project_alphanumeric
-  identifier            = local.project_alphanumeric
-  engine                = "postgres"
-  engine_version        = "14.6"
-  instance_class        = "db.t3.micro"
-  ca_cert_identifier    = "rds-ca-2019"
-  username              = local.project_alphanumeric
-  password              = var.db_password
-  //manage_master_user_password         = true
+  allocated_storage                   = 20
+  max_allocated_storage               = 50
+  db_name                             = local.project_alphanumeric
+  identifier                          = local.project_alphanumeric
+  engine                              = "postgres"
+  engine_version                      = "15.5"
+  instance_class                      = "db.t3.micro"
+  ca_cert_identifier                  = "rds-ca-rsa2048-g1"
+  username                            = local.project_alphanumeric
+  password                            = var.db_password
   multi_az                            = false
   skip_final_snapshot                 = true
   storage_encrypted                   = true
